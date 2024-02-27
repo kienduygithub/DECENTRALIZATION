@@ -1,32 +1,46 @@
 import './App.scss';
+import 'react-toastify/dist/ReactToastify.css';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route
+    Flip,
+    ToastContainer
+} from 'react-toastify'
+import {
+    BrowserRouter as Router
 } from "react-router-dom";
 import { connect } from 'react-redux';
 import * as actions from './store/actions';
-import DefaultComponent from './container/Default/Default';
-import routes from './routes/index';
+import { useEffect, useState } from 'react';
+import Header from './components/Header/Header';
+import AppRoutes from './routes/AppRoutes';
 function App(props) {
+    const [ account, setAccount ] = useState({});
+    useEffect(() => {
+        const session = sessionStorage.getItem('account');
+        if (session) {
+            setAccount(JSON.parse(session));
+        }
+    }, []);
     return (
         <Router>
-            <div className="app-container">
-                <Switch>
-                    {
-                        routes.map((route, index) => {
-                            let path = route.path;
-                            let element = route.element;
-                            let isShowHeader = route.isShowHeader;
-                            return (
-                                <Route key={index} path={path} exact={true}>
-                                    <DefaultComponent isShowHeader={isShowHeader} element={element} />
-                                </Route>
-                            )
-                        })
-                    }
-                </Switch>
+            <div className='app-header'>
+                <Header />
             </div>
+            <div className="app-container">
+                <AppRoutes />
+            </div>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Flip}
+            />
         </Router>
     );
 }

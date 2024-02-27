@@ -1,4 +1,3 @@
-import React from "react";
 import './Home.scss';
 import { connect } from "react-redux";
 const Home = () => {
