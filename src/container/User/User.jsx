@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import {
     useHistory
 } from 'react-router-dom';
+import ManageUsers from "../../components/ManageUsers/ManageUsers";
 const User = (props) => {
     const history = useHistory();
     return (
         <div className="user-container">
-            User container
+            <ManageUsers/>
         </div>
     )
 }
