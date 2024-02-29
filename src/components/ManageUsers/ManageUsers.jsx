@@ -5,13 +5,16 @@ import * as userServices from '../../services/userServices';
 import ReactPaginate from 'react-paginate';
 import { toast } from "react-toastify";
 import ModalDelete from "./ModalDelete";
+import ModalUser from "./ModalUser";
 const ManageUsers = (props) => {
     const [ users, setUsers ] = useState([]);
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ currentLimit, setCurrentLimit ] = useState(3);
     const [ totalPages, setTotalPages ] = useState(0);
     const [ isShowModalDelete, setIsShowModalDelete ] = useState(false);
+    const [ isShowModalUser, setIsShowModalUser ] = useState(false);
     const [ dataModal, setDataModal ] = useState({});
+    const [ actionModalUser, setActionModalUser ] = useState('');
     const fetchAllUsers = async () => {
         
         const response = await userServices.getAllUsers(currentPage, currentLimit);
@@ -28,6 +31,7 @@ const ManageUsers = (props) => {
         const response = await userServices.deleteUser(dataModal.id);
         if (response && response.EC === 0) {
             toast.success(response.EM);
+            setIsShowModalDelete(false);
             fetchAllUsers();
         } else if (response && response.EC === 1) {
             toast.error(response.EM);
@@ -36,8 +40,19 @@ const ManageUsers = (props) => {
             toast.error(response.EM);
         }
     }
+    const handleOpenModalCreate = () => {
+        setIsShowModalUser(true);
+        setActionModalUser('CREATE')
+    }
     const handleOpenEditModal = (user) => {
-
+        setIsShowModalUser(true);
+        setDataModal(user);
+        setActionModalUser('UPDATE');
+    }
+    const handleCloseModalUser = async () => {
+        setIsShowModalUser(false);
+        setDataModal({});
+        await fetchAllUsers();
     }
     const handleOpenModalDelete = (user) => {
         setIsShowModalDelete(true);
@@ -45,6 +60,10 @@ const ManageUsers = (props) => {
     }
     const handleCloseModalDelete = () => {
         setIsShowModalDelete(false);
+        setDataModal({});
+    }
+    const handleRefresh = async () => {
+        await fetchAllUsers();
     }
     useEffect(() => {
         fetchAllUsers();
@@ -53,17 +72,21 @@ const ManageUsers = (props) => {
         if (currentPage) {
             fetchAllUsers();
         }
-    }, [ currentPage]);
+    }, [ currentPage ]);
     return (
         <>
             <div className="manage-users-container container">
                 <div className="user-header">
-                    <div className="title">
+                    <div className="title my-3">
                         <h3>Table Users</h3>
                     </div>
-                    <div className="actions">
-                        <button className="btn btn-success">Refresh</button>
-                        <button className="btn btn-primary">Add new user</button>
+                    <div className="actions d-flex gap-1 my-3">
+                        <button className="btn btn-success" onClick={() => handleRefresh()}>
+                            <i className="fa fa-refresh"></i> Refresh
+                        </button>
+                        <button className="btn btn-primary" onClick={() => handleOpenModalCreate()}>
+                            <i className="fa fa-plus"></i> Add new user
+                        </button>
                     </div>
                 </div>
                 <div className="user-body">
@@ -85,14 +108,18 @@ const ManageUsers = (props) => {
                                         {
                                             users.map((user, index) => (
                                                 <tr key={user.id} className="align-middle">
-                                                    <td>{index + 1}</td>
+                                                    <td>{index + currentLimit*(currentPage - 1) + 1}</td>
                                                     <td>{user.id}</td>
                                                     <td title={user.email}>{user.email}</td>
                                                     <td>{user.username}</td>
                                                     <td>{user.Group ? user.Group.name : 'None'}</td>
                                                     <td className="d-flex align-items-center gap-1">
-                                                        <button className="btn btn-warning" style={{minWidth: '68px'}} onClick={() => handleOpenEditModal(user)}>Edit</button>
-                                                        <button className="btn btn-danger" style={{minWidth: '68px'}} onClick={() => handleOpenModalDelete(user)}>Delete</button>
+                                                        <button className="btn btn-warning" style={{ minWidth: '30px' }} onClick={() => handleOpenEditModal(user)}>
+                                                            <i className="fa fa-pencil"></i>
+                                                        </button>
+                                                        <button className="btn btn-danger" style={{ minWidth: '30px' }} onClick={() => handleOpenModalDelete(user)}>
+                                                            <i className="fa fa-trash-o"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))
@@ -139,6 +166,13 @@ const ManageUsers = (props) => {
                 isShow={isShowModalDelete}
                 handleClose={handleCloseModalDelete}
                 confirmDeleteUser={handleDeleteUser}
+                dataUser={dataModal}
+            />
+            <ModalUser
+                title={'Create new user'}
+                isShow={isShowModalUser}
+                handleClose={handleCloseModalUser}
+                action={actionModalUser}
                 dataUser={dataModal}
             />
         </>

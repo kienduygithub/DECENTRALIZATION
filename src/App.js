@@ -1,5 +1,6 @@
 import './App.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'font-awesome/css/font-awesome.min.css';
 import {
     Flip,
     ToastContainer

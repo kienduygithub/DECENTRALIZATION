@@ -17,3 +17,21 @@ export const deleteUser = async (userId) => {
         console.log(error);
     }
 }
+
+export const createUser = async (data) => {
+    try {
+        const response = await customAxios.post('/user/create', data);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const updateUser = async (data) => {
+    try {
+        const response = await customAxios.put('/user/update', data);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
