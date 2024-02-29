@@ -1,7 +1,7 @@
 import express from 'express';
 require('dotenv').config();
 import initViewEngine from './config/viewEngine';
-import initWebRoutes from './routes/rootRouter';
+import initWebApiRoutes from './routes/rootRouter';
 import initWebAppRoutes from './routes/web';
 import connectDB from './config/connectDB';
 import cors from 'cors';
@@ -11,8 +11,9 @@ import compression from 'compression';
 const app = express();
 const port = process.env.PORT || 8080;
 
+console.log('process', process.env.URL_CLIENT)
 const corsConfig = {
-    baseURL: process.env.URL_CLIENT,
+    origin: process.env.URL_CLIENT,
     methods: [ 'GET', 'POST', 'PUT', 'DELETE' ],
     credentials: true
 }
@@ -32,7 +33,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 // CONFIG
 initViewEngine(app);
-initWebRoutes(app);
+initWebApiRoutes(app);
 initWebAppRoutes(app);
 connectDB();
 
