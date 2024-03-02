@@ -58,7 +58,7 @@ const Login = () => {
                 }
                 sessionStorage.setItem('account', JSON.stringify(dataSession));
                 navigate.push('/users');
-                window.location.reload();
+                // window.location.reload();
             } else {
                 if (+response.DT === 2) {
                     setObjCheckInput({

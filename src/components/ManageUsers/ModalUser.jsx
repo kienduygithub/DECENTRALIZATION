@@ -44,35 +44,8 @@ const ModalUser = (props) => {
             }
         }
     }
-    const checkValidInputs = () => {
-        setValidInput({
-            ...defaultValid
-        });
-        // CREATE
-        if (action === 'UPDATE') {
-            return true;
-        } else {
-            const cloneValidInput = _.cloneDeep(validInput);
-            let arrCheck = 
-                [ 'email', 'phone', 'username', 'password' ];
-            let arrErr = [];
-            arrCheck.forEach((item) => {
-                if (!form[ item ]) {
-                    cloneValidInput[ item ] = false;
-                    arrErr.push(item);
-                }
-            })
-            console.log(arrErr);
-            if (arrErr.length > 0) {
-                setValidInput({ ...cloneValidInput });
-                toast.error('Please enter required information!');
-                return false;
-            }
-    
-            return true;
-        }
-    }
     const handleSave = async () => {
+        setValidInput(defaultValid);
         const valid = checkValidInputs();
         if (valid) {
             const response = action === 'CREATE' ? 
@@ -93,11 +66,37 @@ const ModalUser = (props) => {
             }
         }
     }
+    const checkValidInputs = () => {
+        // CREATE
+        if (action === 'UPDATE') {
+            return true;
+        } else {
+            const cloneValidInput = _.cloneDeep(validInput);
+            let arrCheck = 
+                [ 'email', 'phone', 'username', 'password' ];
+            let arrErr = [];
+            arrCheck.forEach((item) => {
+                if (form[ item ] === '') {
+                    cloneValidInput[ item ] = false;
+                    arrErr.push(item);
+                } else {
+                    cloneValidInput[ item ] = true
+                }
+            })
+            if (arrErr.length > 0) {
+                setValidInput({ ...cloneValidInput });
+                toast.error('Please enter required information!');
+                return false;
+            }
+    
+            return true;
+        }
+    }
     useEffect(() => {
         fetchAllGroups();
     }, []);
     useEffect(() => {
-        setForm({ ...form, group: groups[ 0 ]?.id });
+        setForm({ ...defaultForm, group: groups[ 0 ]?.id });
         setValidInput(defaultValid);
         if (props.action === "UPDATE") {
             setForm({ ...props.dataUser, group: props.dataUser.groupId });
