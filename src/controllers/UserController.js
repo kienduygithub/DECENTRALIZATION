@@ -12,7 +12,13 @@ const postLoginUser = async (req, res) => {
             })
         }
         const response = await UserService.postLoginUser(req.body);
-
+        const { token, ...others } = response.DT;
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 1000
+        })
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
@@ -65,6 +71,7 @@ const handleLogout = async (req, res) => {
 // READ - CREATE - UPDATE - DELETE
 const readAllUsers = async (req, res) => {
     try {
+        console.log('req.user', req.user);
         const { page, limit } = req.query;
         if (page && limit) {
             const response = await UserService.getUserPanigate(+page, +limit);

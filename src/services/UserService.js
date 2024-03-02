@@ -1,7 +1,8 @@
 import { Op } from 'sequelize';
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
-
+import jwtActions from '../middleware/jwtActions';
+import jwtService from '../services/JWTService';
 const salt = bcrypt.genSaltSync(10);
 
 // LOGIN
@@ -34,10 +35,23 @@ const postLoginUser = (data) => {
                     })
                 } else {
                     delete user.password;
+                    delete user.createdAt;
+                    delete user.updatedAt;
+                    let groupWithRoles = await jwtService.getGroupWithRole(user);
+                    let payload = {
+                        id: user.id,
+                        email: user.email,
+                        groupWithRoles: groupWithRoles
+                    }
+                    const access_token = jwtActions.createAccessToken(payload);
                     resolve({
                         EM: 'Login successfully!',
                         EC: 0,
-                        DT: user
+                        DT: {
+                            user,
+                            token: access_token,
+                            groupWithRoles
+                        }
                     })
                 }
             }
@@ -81,7 +95,8 @@ const postRegister = (data) => {
                     email: email,
                     phone: phone,
                     username: username,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    groupId: 4
                 })
                 resolve({
                     EM: 'The user has been created successfully!',

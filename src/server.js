@@ -11,7 +11,6 @@ import compression from 'compression';
 const app = express();
 const port = process.env.PORT || 8080;
 
-console.log('process', process.env.URL_CLIENT)
 const corsConfig = {
     origin: process.env.URL_CLIENT,
     methods: [ 'GET', 'POST', 'PUT', 'DELETE' ],
