@@ -35,3 +35,12 @@ export const updateUser = async (data) => {
         console.log(error);
     }
 }
+
+export const getUserAccount = async () => {
+    try {
+        const response = await customAxios.get('/account');
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}

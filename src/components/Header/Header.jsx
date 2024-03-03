@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Header.scss';
 import { connect } from 'react-redux';
 import {
@@ -6,23 +6,24 @@ import {
     useHistory,
     useLocation
 } from 'react-router-dom';
+import {
+    UserContext
+} from '../../context/UserContext'
 const Header = (props) => {
     const history = useHistory();
     const location = useLocation();
     const [ isShow, setIsShow ] = useState(true);
+    const { user } = useContext(UserContext);
     useEffect(() => {
-        const session = sessionStorage.getItem('account');
         const pathname = location.pathname;
-        if (pathname === '/login') {
+        if (pathname === '/login' || pathname === '/register' || user && user.isAuthenticated === false) {
             setIsShow(false);
-        } else {
-            setIsShow(true);
         }
-    }, [])
+    }, [location.pathname])
     return (
         <>
             {
-                isShow ? 
+                isShow || location.pathname === '/' || user.isAuthenticated === true? 
                     <div className='header-container'>
                         <div className="topnav">
                             <NavLink to="/" exact>Home</NavLink>

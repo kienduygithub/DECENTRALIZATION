@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import './ManageUsers.scss';
 import { connect } from "react-redux";
 import * as userServices from '../../services/userServices';
@@ -6,6 +6,10 @@ import ReactPaginate from 'react-paginate';
 import { toast } from "react-toastify";
 import ModalDelete from "./ModalDelete";
 import ModalUser from "./ModalUser";
+import {
+    UserContext
+} from '../../context/UserContext'
+import { Audio } from 'react-loader-spinner'
 const ManageUsers = (props) => {
     const [ users, setUsers ] = useState([]);
     const [ currentPage, setCurrentPage ] = useState(1);
@@ -16,7 +20,6 @@ const ManageUsers = (props) => {
     const [ dataModal, setDataModal ] = useState({});
     const [ actionModalUser, setActionModalUser ] = useState('');
     const fetchAllUsers = async () => {
-        
         const response = await userServices.getAllUsers(currentPage, currentLimit);
         if (response && +response.EC === 0) {
             setUsers(response.DT.users);
@@ -24,7 +27,6 @@ const ManageUsers = (props) => {
         }
     }
     const handlePageClick = (event) => {
-        console.log(event.selected);
         setCurrentPage(event.selected + 1);
     };
     const handleDeleteUser = async () => {
@@ -65,10 +67,12 @@ const ManageUsers = (props) => {
     const handleRefresh = async () => {
         await fetchAllUsers();
     }
+    // useEffect(() => {
+    //     fetchAllUsers();
+    // }, []);
+    const { user } = useContext(UserContext);
     useEffect(() => {
-        fetchAllUsers();
-    }, []);
-    useEffect(() => {
+        console.log('user', user);
         if (currentPage) {
             fetchAllUsers();
         }
@@ -168,13 +172,16 @@ const ManageUsers = (props) => {
                 confirmDeleteUser={handleDeleteUser}
                 dataUser={dataModal}
             />
-            <ModalUser
-                title={'Create new user'}
-                isShow={isShowModalUser}
-                handleClose={handleCloseModalUser}
-                action={actionModalUser}
-                dataUser={dataModal}
-            />
+            {
+                isShowModalUser &&
+                <ModalUser
+                    title={'Create new user'}
+                    isShow={isShowModalUser}
+                    handleClose={handleCloseModalUser}
+                    action={actionModalUser}
+                    dataUser={dataModal}
+                />
+            }
         </>
     )
 }

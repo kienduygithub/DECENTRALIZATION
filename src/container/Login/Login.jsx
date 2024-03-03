@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import './Login.scss';
 import { connect } from "react-redux";
 import {
@@ -6,8 +6,12 @@ import {
 } from 'react-router-dom';
 import { toast } from "react-toastify";
 import * as authServices from '../../services/authServices';
+import {
+    UserContext
+} from '../../context/UserContext';
 const Login = () => {
     const navigate = useHistory();
+    const { loginContext, user } = useContext(UserContext);
     const [ form, setForm ] = useState({
         valueLogin: '',
         password: ''
@@ -49,16 +53,19 @@ const Login = () => {
                 valueLogin: form.valueLogin,
                 password: form.password
             });
-            console.log('response: ', response);
             if (response && +response.EC === 0) {
                 toast.success(response.EM);
-                let dataSession = {
+                let userData = {
                     isAuthenticated: true,
-                    token: 'fake token'
+                    token: response.DT.token,
+                    account: {
+                        ...response.DT.groupWithRoles,
+                        email: response.DT.email,
+                        username: response.DT.username
+                    }
                 }
-                sessionStorage.setItem('account', JSON.stringify(dataSession));
+                loginContext(userData);
                 navigate.push('/users');
-                // window.location.reload();
             } else {
                 if (+response.DT === 2) {
                     setObjCheckInput({
@@ -79,12 +86,13 @@ const Login = () => {
         }
     }
     useEffect(() => {
-        const session = sessionStorage.getItem('account');
-        if (session) {
+        // Khi người dùng đã đăng nhập thì không vô được
+        // trang login
+        console.log('user', user);
+        if (user.isAuthenticated === true) {
             navigate.push('/');
-            window.location.reload();
         }
-    }, []);
+    }, [ user ]);
     return (
          <div className="login-container d-flex justify-content-center align-items-center">
             <div className="container">

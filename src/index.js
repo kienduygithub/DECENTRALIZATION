@@ -8,14 +8,16 @@ import store from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import 'bootstrap/dist/css/bootstrap.css';
-
+import { UserProvider } from './context/UserContext.js';
 const persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-            <App />
+            <UserProvider>
+                <App />
+            </UserProvider>
         </PersistGate>
     </Provider>
 );

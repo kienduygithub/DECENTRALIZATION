@@ -1,5 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+    UserContext
+} from '../context/UserContext';
+import { useContext } from "react";
 
 const customAxios = axios.create({
     baseURL: process.env.REACT_APP_SERVER_URL,
@@ -27,7 +31,8 @@ customAxios.interceptors.response.use(
             case 401: {
                 toast.error('Unauthorized the user. Please login...');
                 // window.location.href = '/login';
-                return Promise.reject(err);
+
+                return err && err.response.data;
             }
 
             // forbidden (permission related issues)
