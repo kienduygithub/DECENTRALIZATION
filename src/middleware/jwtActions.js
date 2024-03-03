@@ -25,7 +25,10 @@ const verifyToken = (token) => {
     return decoded;
 }
 
+const nonSecurePaths = [ '/login', '/register', '/logout' ];
+
 const checkUserJWT = (req, res, next) => {
+    if (nonSecurePaths.includes(req.path)) return next();
     let cookies = req.cookies;
     if (cookies && cookies.token) {
         let token = cookies.token;
@@ -33,6 +36,7 @@ const checkUserJWT = (req, res, next) => {
         if (decoded) {
             let user = decoded;
             req.user = user;
+            req.token = token;
             next();
         } else {
             return res.status(401).json({
@@ -51,6 +55,7 @@ const checkUserJWT = (req, res, next) => {
 }
 
 const checkUserPermission = (req, res, next) => {
+    if (nonSecurePaths.includes(req.path) || req.path === '/account') return next();
     if (req.user) {
         let email = req.user.email;
         let roles = req.user.groupWithRoles.Roles;
@@ -60,17 +65,17 @@ const checkUserPermission = (req, res, next) => {
             return res.status(403).json({
                 EM: `You don't have permission to access this resource`,
                 EC: -1,
-                DT: ''
+                DT: req.path
             })
         }
-        let canAccess = roles.some(item => item.url.includes(currentUrl));
+        let canAccess = roles.some(item => item.url === currentUrl);
         if (canAccess === true) {
             next();
         } else {
             return res.status(403).json({
                 EM: `You don't have permission to access this resource`,
                 EC: -1,
-                DT: ''
+                DT: req.path
             })
         }
 

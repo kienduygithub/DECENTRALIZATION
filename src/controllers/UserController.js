@@ -1,5 +1,5 @@
 import UserService from '../services/UserService';
-
+import { createAccessToken } from '../middleware/jwtActions';
 // LOGIN
 const postLoginUser = async (req, res) => {
     try {
@@ -12,13 +12,14 @@ const postLoginUser = async (req, res) => {
             })
         }
         const response = await UserService.postLoginUser(req.body);
-        const { token, ...others } = response.DT;
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            maxAge: 60 * 60 * 1000
-        })
+        if (response && response.DT && response.DT.token) {
+            res.cookie('token', response.DT.token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000
+            })
+        }
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({
@@ -71,7 +72,6 @@ const handleLogout = async (req, res) => {
 // READ - CREATE - UPDATE - DELETE
 const readAllUsers = async (req, res) => {
     try {
-        console.log('req.user', req.user);
         const { page, limit } = req.query;
         if (page && limit) {
             const response = await UserService.getUserPanigate(+page, +limit);
@@ -129,6 +129,28 @@ const deleteUser = async (req, res) => {
         })
     }
 }
+
+// GET USER ACCOUNT
+const getUserAcountAfterReload = async (req, res) => {
+    try {
+        const user = req.user;
+        return res.status(200).json({
+            EM: 'Get user account successfully!',
+            EC: 0,
+            DT: {
+                token: req.token,
+                ...user
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            EM: 'Error from server...',
+            EC: -1,
+            DT: ''
+        })
+    }
+}
 module.exports = {
     postLoginUser: postLoginUser,
     postRegister: postRegister,
@@ -136,5 +158,6 @@ module.exports = {
     readAllUsers: readAllUsers,
     createUser: createUser,
     updateUser: updateUser,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    getUserAcountAfterReload: getUserAcountAfterReload
 }

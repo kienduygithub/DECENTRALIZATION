@@ -41,6 +41,7 @@ const postLoginUser = (data) => {
                     let payload = {
                         id: user.id,
                         email: user.email,
+                        username: user.username,
                         groupWithRoles: groupWithRoles
                     }
                     const access_token = jwtActions.createAccessToken(payload);
@@ -48,9 +49,10 @@ const postLoginUser = (data) => {
                         EM: 'Login successfully!',
                         EC: 0,
                         DT: {
-                            user,
                             token: access_token,
-                            groupWithRoles
+                            groupWithRoles,
+                            email: user.email,
+                            username: user.username
                         }
                     })
                 }
