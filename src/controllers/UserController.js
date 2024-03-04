@@ -60,7 +60,12 @@ const postRegister = async (req, res) => {
 // LOGOUT
 const handleLogout = async (req, res) => {
     try {
-
+        res.clearCookie('token');
+        return res.status(200).json({
+            EM: 'Log out!',
+            EC: 0,
+            DT: ''
+        })
     } catch (error) {
         return res.status(500).json({
             EM: 'Error from server',

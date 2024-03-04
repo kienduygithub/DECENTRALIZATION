@@ -27,11 +27,19 @@ const verifyToken = (token) => {
 
 const nonSecurePaths = [ '/login', '/register', '/logout' ];
 
+const extractToken = (req) => {
+    if (req.headers.authorization && req.headers.authorization.split(" ")[ 0 ] === 'Bearer') {
+        return req.headers.authorization.split(" ")[ 1 ];
+    }
+    return null;
+}
+
 const checkUserJWT = (req, res, next) => {
     if (nonSecurePaths.includes(req.path)) return next();
     let cookies = req.cookies;
-    if (cookies && cookies.token) {
-        let token = cookies.token;
+    let tokenFromHeaders = extractToken(req);
+    if (tokenFromHeaders || cookies && cookies.token) {
+        let token = tokenFromHeaders ? tokenFromHeaders : cookies.token;
         let decoded = verifyToken(token);
         if (decoded) {
             let user = decoded;
