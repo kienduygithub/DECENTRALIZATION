@@ -16,11 +16,11 @@ const UserProvider = ({ children }) => {
         setUser(userData);
     }
 
-    const logout = () => {
-        setUser((user) => ({
-            name: '',
-            auth: false
-        }))
+    const logoutContext = () => {
+        setUser({
+            ...defaultUser,
+            isLoading: false
+        })
     }
     const fetchUser = async () => {
         let response = await getUserAccount();
@@ -43,13 +43,17 @@ const UserProvider = ({ children }) => {
         }
     }
     useEffect(() => {
-        if (window.location.pathname !== '/' || window.location.pathname !== '/login') {
+        if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
             console.log('location', window.location.pathname)
             fetchUser();
+        } else {
+            setUser({
+                ...user, isLoading: false//làm như này sẽ k mất người dùng
+            })
         }
     }, []);
     return (
-        <UserContext.Provider value={{ user, loginContext, logout }}>
+        <UserContext.Provider value={{ user, loginContext, logoutContext }}>
             {children}
         </UserContext.Provider>
     )
