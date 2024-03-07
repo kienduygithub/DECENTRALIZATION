@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react"
+import React, {useEffect, useState} from "react"
 import {
     getUserAccount
 } from '../services/userServices'
 const UserContext = React.createContext();
-const UserProvider = ({ children }) => {
+const UserProvider = ({children}) => {
     const defaultUser = ({
         isLoading: true,
         isAuthenticated: false,
         token: '',
         account: {}
     })
-    const [ user, setUser ] = useState(defaultUser);
+    const [user, setUser] = useState(defaultUser);
 
     const loginContext = (userData) => {
         setUser(userData);
@@ -24,7 +24,7 @@ const UserProvider = ({ children }) => {
     }
     const fetchUser = async () => {
         let response = await getUserAccount();
-        if (response && response.EC === 0) {
+        if(response && response.EC === 0) {
             console.log('response', response.DT);
             let data = {
                 groupWithRoles: response.DT.groupWithRoles,
@@ -43,20 +43,21 @@ const UserProvider = ({ children }) => {
         }
     }
     useEffect(() => {
-        if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
-            console.log('location', window.location.pathname)
-            fetchUser();
-        } else {
-            setUser({
-                ...user, isLoading: false//làm như này sẽ k mất người dùng
-            })
-        }
+        // if (window.location.pathname !== '/' && window.location.pathname !== '/login') {
+        //     console.log('location', window.location.pathname)
+        //     fetchUser();
+        // } else {
+        //     setUser({
+        //         ...user, isLoading: false//làm như này sẽ k mất người dùng
+        //     })
+        // }
+        fetchUser()
     }, []);
     return (
-        <UserContext.Provider value={{ user, loginContext, logoutContext }}>
+        <UserContext.Provider value={{user, loginContext, logoutContext}}>
             {children}
         </UserContext.Provider>
     )
 }
 
-export { UserContext, UserProvider }
+export {UserContext, UserProvider}

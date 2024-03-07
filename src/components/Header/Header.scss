@@ -26,6 +26,12 @@ $colorhover: #61dafb;
     //     }
 
     // }
+    padding-bottom: 0.5rem;
+
+    .navbar {
+        padding-bottom: 0 !important;
+    }
+
     .bg-header {
         background-color: #20232a;
     }
@@ -57,7 +63,9 @@ $colorhover: #61dafb;
 
     a,
     .nav-link {
-        color: white !important;
+        color  : white !important;
+        height : 100%;
+        display: block;
 
         &:hover {
             color: $colorhover !important;
@@ -66,7 +74,9 @@ $colorhover: #61dafb;
 
     .nav-link {
         &.active {
-            color: $colorhover !important;
+            color        : $colorhover !important;
+            border-bottom: 1px solid $colorhover;
+
         }
     }
 

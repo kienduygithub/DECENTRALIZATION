@@ -26,11 +26,17 @@ const ModalUser = (props) => {
     const [ form, setForm ] = useState(defaultForm);
     const [ validInput, setValidInput ] = useState(defaultValid);
     const [ groups, setGroups ] = useState({});
-    const handleOnChangeInput = (e, name) => {
-        setForm({
-            ...form,
-            [name]: e.target.value
-        })
+    const handleOnChangeInput = (e,name) => {
+        let _form = _.cloneDeep(form);
+        _form[name] = e.target.value;
+        if(_form[name] !== '') {
+            setValidInput({
+                ...validInput,
+                [name]: true
+            })
+        }
+        setForm(_form);
+        
     }
     const fetchAllGroups = async () => {
         const response = await GroupServices.getAllGroups();

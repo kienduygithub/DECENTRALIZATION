@@ -89,11 +89,11 @@ const Login = () => {
     useEffect(() => {
         // Khi người dùng đã đăng nhập thì không vô được
         // trang login
-        console.log('user', user);
-        if (user.isAuthenticated === true) {
+        if (user && user.isAuthenticated === true) {
+            console.log('user', user);
             navigate.push('/');
         }
-    }, [ user ]);
+    }, [user]);
     return (
          <div className="login-container d-flex justify-content-center align-items-center">
             <div className="container">

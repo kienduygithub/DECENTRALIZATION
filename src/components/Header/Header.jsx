@@ -51,8 +51,8 @@ const Header = (props) => {
                                     <img
                                         alt=""
                                         src={logo}
-                                        width="50"
-                                        height="50"
+                                        width="35"
+                                        height="35"
                                         className="d-inline-block align-top"
                                     />{' '}
                                     <span className='brand-name'>Kiến Duy</span>
@@ -63,13 +63,15 @@ const Header = (props) => {
                                         <NavLink to="/" exact className="nav-link">Home</NavLink>
                                         <NavLink to="/users" className="nav-link">Users</NavLink>
                                         <NavLink to="/projects" className="nav-link">Projects</NavLink>
+                                        <NavLink to="/roles" className="nav-link">Roles</NavLink>
+                                        <NavLink to="/group-role" className="nav-link">Group Role</NavLink>
                                     </Nav>
                                     <Nav>
                                         {
                                             user && user.isAuthenticated ? 
                                                 <>
                                                     <Nav.Item className="nav-link">
-                                                        Welcome {user.account.username ? user.account.username : 'User'}!
+                                                        Welcome {user?.account?.username ? user.account.username : 'User'}!
                                                     </Nav.Item>
                                                     <NavDropdown title="Settings" id="basic-nav-dropdown">
                                                         <NavDropdown.Item href="#action/3.1">Change password</NavDropdown.Item>
