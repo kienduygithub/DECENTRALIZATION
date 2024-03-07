@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     class Role extends Model {
         static associate(models) {
             Role.belongsToMany(models.Group, {
-                through: 'Group_Role'
+                through: 'Group_Role',
+                foreignKey: 'roleId'
             });
         }
     }

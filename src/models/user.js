@@ -5,7 +5,9 @@ const {
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
         static associate(models) {
-            User.belongsTo(models.Group);
+            User.belongsTo(models.Group, {
+                foreignKey: 'groupId'
+            });
             User.belongsToMany(models.Project, {
                 through: 'Project_User'
             });

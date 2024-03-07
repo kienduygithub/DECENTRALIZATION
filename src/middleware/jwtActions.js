@@ -3,14 +3,14 @@ require('dotenv').config();
 const createAccessToken = (payload) => {
     const access_token = jwt.sign({
         ...payload
-    }, process.env.ACCESS_TOKEN, { expiresIn: process.env.EXPIRES_ACCESS });
+    }, process.env.ACCESS_TOKEN, {expiresIn: process.env.EXPIRES_ACCESS});
     return access_token;
 }
 
 const createRefreshToken = (payload) => {
     const refresh_token = jwt.sign({
         ...payload
-    }, process.env.REFRESH_TOKEN, { expiresIn: process.env.EXPIRES_REFRESH });
+    }, process.env.REFRESH_TOKEN, {expiresIn: process.env.EXPIRES_REFRESH});
     return refresh_token;
 }
 
@@ -25,11 +25,11 @@ const verifyToken = (token) => {
     return decoded;
 }
 
-const nonSecurePaths = [ '/login', '/register', '/logout' ];
+const nonSecurePaths = ['/login', '/register', '/logout', '/role/create', '/role/read', '/role/update', '/role/delete', '/role/by-group', '/role/assign-to-group', '/group/read'];
 
 const extractToken = (req) => {
-    if (req.headers.authorization && req.headers.authorization.split(" ")[ 0 ] === 'Bearer') {
-        return req.headers.authorization.split(" ")[ 1 ];
+    if (req.headers.authorization && req.headers.authorization.split(" ")[0] === 'Bearer') {
+        return req.headers.authorization.split(" ")[1];
     }
     return null;
 }
